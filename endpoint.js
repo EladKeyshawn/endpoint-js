@@ -46,7 +46,7 @@ function processRouterFile(routerPath) {
 
         fs.openSync(routerFilePath,'a');
         console.log("Router.js created!");
-        const RouterStarter = fs.readFileSync('./test/RouterStarter.txt');
+        const RouterStarter = fs.readFileSync('./resources/RouterStarter.txt');
 
         fs.writeFileSync(routerFilePath,RouterStarter);
 
