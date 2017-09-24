@@ -1,0 +1,15 @@
+module.exports = [
+    {
+        path: '/status',
+        handler: rootRequire('app/routes/status'),
+    },
+    {
+        path: '/another-path',
+        subpaths: [
+            {
+                path: '/specific-subpath',
+                handler: rootRequire('app/routes/another-path/specific-subpath')
+            }
+        ]
+    }
+];

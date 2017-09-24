@@ -1,0 +1,19 @@
+{
+  "name": "endpoint-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EladKeyshawn/endpointjs.git"
+  },
+  "author": "Elad Keyshawn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EladKeyshawn/endpointjs/issues"
+  },
+  "homepage": "https://github.com/EladKeyshawn/endpointjs#readme"
+}
