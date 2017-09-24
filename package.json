@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/EladKeyshawn/endpointjs/issues"
   },
-  "homepage": "https://github.com/EladKeyshawn/endpointjs#readme"
+  "homepage": "https://github.com/EladKeyshawn/endpointjs#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "lodash": "^4.17.4"
+  }
 }
