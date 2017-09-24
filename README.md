@@ -1,2 +1,2 @@
 # endpoint.js
-## simplistic express routing management for NodeJS
+Simplistic express routing management for NodeJS
