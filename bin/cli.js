@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-var moduleInit = require('../');
+const lib = require('./endpoint-lib');
 var path = require('path');
 var chalk = require('chalk');
 var inquirer = require('inquirer');
 var clopts = require('cliclopts')([
     {
-        name: 'add route',
-        abbr: 'd',
-        help: 'specify module directory (default: cwd)'
+        name: 'init',
+        abbr: 'i',
+        help: 'init endpoint.js app directory'
     },
     {
         name: 'version',
@@ -16,7 +16,12 @@ var clopts = require('cliclopts')([
         boolean: true,
         help: 'show version information'
     },
-
+    {
+        name: 'force',
+        abbr: 'f',
+        help: 'show help',
+        boolean: true
+    },
     {
         name: 'help',
         abbr: 'h',
@@ -45,59 +50,19 @@ var questions = [
         message: 'version',
         default: '1.0.0'
     },
-    {
-        type: 'input',
-        name: 'pkgDescription',
-        message: 'description'
-    },
-    {
-        type: 'input',
-        name: 'pkgKeywords',
-        message: 'keywords'
-    },
-    {
-        type: 'list',
-        name: 'pkgLicense',
-        message: 'license',
-        choices: ['Apache-2.0', 'BSD-3-Clause', 'CC0-1.0', 'ISC', 'MIT', 'UNLICENSED'],
-        default: 'ISC'
-    },
-    {
-        type: 'confirm',
-        name: 'private',
-        message: 'private',
-        default: false
-    },
-    {
-        type: 'confirm',
-        name: 'pkgContributing',
-        message: 'CONTRIBUTING.md',
-        default: true
-    },
-    {
-        type: 'list',
-        name: 'pkgLinter',
-        message: 'linter',
-        choices: ['standard', 'semistandard'],
-        default: 'standard'
-    },
-    {
-        type: 'confirm',
-        name: 'gitInit',
-        message: 'git init',
-        default: true
-    },
-    {
-        type: 'confirm',
-        name: 'npmInstall',
-        message: 'npm install',
-        default: true
-    }
 ]
+
+function initEndpointStructure() {
+    lib({})
+}
 
 if (argv.force) {
     force()
-} else {
+}
+else if (argv.init) {
+    initEndpointStructure()
+}
+else {
     prompt()
 }
 
@@ -118,18 +83,18 @@ function catchInputErrors () {
     if (errs) process.exit(1)
 }
 
-function force () {
-    var data = {};
-
-    for (var i = 0; i < questions.length; i++) {
-        if (typeof questions[i].default !== 'undefined') {
-            data[questions[i].name] = questions[i].default
-        }
-    }
-
-    data = prepData(data);
-    init(data)
-}
+// function force () {
+//     var data = {};
+//
+//     for (var i = 0; i < questions.length; i++) {
+//         if (typeof questions[i].default !== 'undefined') {
+//             data[questions[i].name] = questions[i].default
+//         }
+//     }
+//
+//     data = prepData(data);
+//     init(data)
+// }
 
 function prompt () {
     inquirer.prompt(questions, function (data) {
@@ -159,24 +124,24 @@ function prepData (data) {
 }
 
 function init (data) {
-    moduleInit(data)
-      .on('create', function (file) {
-          // file created
-          console.log(chalk.green('✓ ') + chalk.bold(file) + ' created')
-      })
-      .on('warn', function (msg) {
-          // something weird happened
-          console.log(chalk.yellow('✗ ' + msg))
-      })
-      .on('err', function (err) {
-          // something went horribly wrong!
-          console.error(err)
-          process.exit(1)
-      })
-      .on('done', function (res) {
-          // we did it!
-          console.log(chalk.green('✓ ') + chalk.bold(res.pkgName) + ' initialized')
-          process.exit(0)
-      })
-      .run() // run the thing
+    lib({})
+      // .on('create', function (file) {
+      //     // file created
+      //     console.log(chalk.green('✓ ') + chalk.bold(file) + ' created')
+      // })
+      // .on('warn', function (msg) {
+      //     // something weird happened
+      //     console.log(chalk.yellow('✗ ' + msg))
+      // })
+      // .on('err', function (err) {
+      //     // something went horribly wrong!
+      //     console.error(err)
+      //     process.exit(1)
+      // })
+      // .on('done', function (res) {
+      //     // we did it!
+      //     console.log(chalk.green('✓ ') + chalk.bold(res.pkgName) + ' initialized')
+      //     process.exit(0)
+      // })
+      // .run() // run the thing
 }
