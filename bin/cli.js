@@ -11,6 +11,11 @@ var clopts = require('cliclopts')([
         help: 'init endpoint.js app directory'
     },
     {
+        name: 'add',
+        abbr: 'a',
+        help: 'add endpoint to api structure'
+    },
+    {
         name: 'version',
         abbr: 'v',
         boolean: true,
@@ -52,12 +57,26 @@ var questions = [
     },
 ]
 
-function initEndpointStructure() {
-    lib({})
+
+// command action functions
+
+function prompt () {
+    inquirer.prompt(questions, function (data) {
+        data = prepData(data)
+        init(data)
+    })
 }
 
-if (argv.force) {
-    force()
+function initEndpointStructure() {
+    lib.initEndpoint({})
+}
+function addEndpoint() {
+    lib.addEndpoint({}, {})
+}
+
+
+if(argv.add) {
+    addEndpoint()
 }
 else if (argv.init) {
     initEndpointStructure()
@@ -96,13 +115,6 @@ function catchInputErrors () {
 //     init(data)
 // }
 
-function prompt () {
-    inquirer.prompt(questions, function (data) {
-        data = prepData(data)
-        init(data)
-    })
-}
-
 function prepData (data) {
 
     if (argv.dir) data.dir = argv.dir;
@@ -124,7 +136,7 @@ function prepData (data) {
 }
 
 function init (data) {
-    lib({})
+    // lib({})
       // .on('create', function (file) {
       //     // file created
       //     console.log(chalk.green('✓ ') + chalk.bold(file) + ' created')

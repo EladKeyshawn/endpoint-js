@@ -21,22 +21,9 @@ const RouterStarter =
   "    // }\n" +
   "];"
 
-function setupRootRequire() {
-    global.rootRequire = function (name) {
-        // escape this dir and node_modules/
-        console.log(path.normalize(`${__dirname}/../../${name}`));
-        try {
-            return require(path.normalize(`${__dirname}/../../${name}`));
-        } catch (err) {
-            console.log("rootRequire error: file could not be found ");
-            return null;
-        }
-    };
-}
+
 
 function generateBoilerplate(routerPath) {
-
-
     console.log("generating app routing...");
     if (!fs.existsSync(routerPath + 'app')) {
         fs.mkdirSync(routerPath + 'app');
@@ -76,19 +63,34 @@ function generateBoilerplate(routerPath) {
     }
 }
 
-const main = function ({test}) {
+const initEndpointStructure = function ({test}) {
 
     let routerPath = path.normalize(`${__dirname}/../../../`);
 
     if (test) {
         routerPath = './';
         console.log('testing mode, routing folder', routerPath);
-
     }
-
     generateBoilerplate(routerPath);
+};
+
+const addEndpoint = function ({endpointPath,router,controller,middleware},{test}) {
+    const appPath = path.normalize(`${__dirname}/../../../app/`);
+    const ROUTER_FILE = 'Router.js';
+    const CONTROLLERS_FOLDER = 'controllers/';
+    const ROUTES_FOLDER = 'routes/';
+
+    try {
+        const Router = require(appPath + ROUTER_FILE);
+    } catch (err) {
+        console.error("could not find Router.js... did you call endpoint --init ?");
+    }
 
 };
 
 
-module.exports = main;
+
+module.exports = {
+    initEndpoint: initEndpointStructure,
+    addEndpoint: addEndpoint
+};
