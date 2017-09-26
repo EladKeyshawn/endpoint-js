@@ -104,7 +104,7 @@ module.exports = function (app, {prefix, test}) {
             })
         } else {
             console.log("attaching endpoint: ", prefix + route.path);
-            app.use(prefix + route.path, route.handler);
+            app.use(prefix + route.path, rootRequire(route.handler));
         }
     }
 

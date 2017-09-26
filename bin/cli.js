@@ -34,44 +34,50 @@ var clopts = require('cliclopts')([
         boolean: true
     }
 ]);
-var argv = require('minimist')(process.argv.slice(2), {
+
+const argv = require('minimist')(process.argv.slice(2), {
     alias: clopts.alias(),
     boolean: clopts.boolean(),
     default: clopts.default()
 });
 
-catchInputErrors()
+catchInputErrors();
 
-var questions = [
+const add_endpoint_prompt_questions = [
     {
         type: 'input',
-        name: 'pkgName',
-        message: 'name',
-        default: path.basename(argv.dir || process.cwd())
+        name: 'endpointPath',
+        message: 'endpoint path?',
+        default: '/api'
     },
     {
         type: 'input',
-        name: 'pkgVersion',
-        message: 'version',
-        default: '1.0.0'
+        name: 'router',
+        message: 'Router file name?',
+        default: 'api.js'
     },
-]
+    {
+        type: 'input',
+        name: 'controller',
+        message: 'controller file name?',
+        default: 'apiController.js'
+    },
+];
 
 
 // command action functions
-
-function prompt () {
-    inquirer.prompt(questions, function (data) {
-        data = prepData(data)
-        init(data)
-    })
+function addEndpointPrompt () {
+    inquirer.prompt(add_endpoint_prompt_questions).then(function (data) {
+        console.log(data);
+        lib.addEndpoint(data,true);
+    });
 }
 
 function initEndpointStructure() {
-    lib.initEndpoint({})
+    lib.initEndpoint({test:true});
 }
 function addEndpoint() {
-    lib.addEndpoint({}, {})
+    addEndpointPrompt()
 }
 
 
@@ -81,9 +87,7 @@ if(argv.add) {
 else if (argv.init) {
     initEndpointStructure()
 }
-else {
-    prompt()
-}
+
 
 function catchInputErrors () {
     var errs = 0
@@ -102,38 +106,7 @@ function catchInputErrors () {
     if (errs) process.exit(1)
 }
 
-// function force () {
-//     var data = {};
-//
-//     for (var i = 0; i < questions.length; i++) {
-//         if (typeof questions[i].default !== 'undefined') {
-//             data[questions[i].name] = questions[i].default
-//         }
-//     }
-//
-//     data = prepData(data);
-//     init(data)
-// }
 
-function prepData (data) {
-
-    if (argv.dir) data.dir = argv.dir;
-    if (!data.pkgDescription) data.pkgDescription = '';
-    if (!data.pkgKeywords) data.pkgKeywords = '';
-    if (data.pkgKeywords !== '') {
-        data.pkgKeywords = data.pkgKeywords
-          .split(/[\s,]+/)
-          .filter(function (value, index, self) {
-              return !!value && self.indexOf(value) === index
-          })
-          .map(function (value) {
-              return '"' + value + '"'
-          })
-          .join(', ')
-    }
-
-    return data
-}
 
 function init (data) {
     // lib({})

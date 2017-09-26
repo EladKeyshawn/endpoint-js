@@ -19,8 +19,7 @@ const RouterStarter =
   "    //         }\n" +
   "    //     ]\n" +
   "    // }\n" +
-  "];"
-
+  "];";
 
 
 function generateBoilerplate(routerPath) {
@@ -47,6 +46,7 @@ function generateBoilerplate(routerPath) {
 
     }
     const routerFilePath = routerPath + 'app/Router.js';
+
     console.log("Processing Router.js ", routerFilePath);
     if (!fs.existsSync(routerFilePath)) {
         console.log("No Route.js was found!");
@@ -68,25 +68,53 @@ const initEndpointStructure = function ({test}) {
     let routerPath = path.normalize(`${__dirname}/../../../`);
 
     if (test) {
-        routerPath = './';
+        routerPath = `${__dirname}/../`;
         console.log('testing mode, routing folder', routerPath);
     }
     generateBoilerplate(routerPath);
 };
 
-const addEndpoint = function ({endpointPath,router,controller,middleware},{test}) {
-    const appPath = path.normalize(`${__dirname}/../../../app/`);
+const addEndpoint = function ({endpointPath, router, controller}, test) {
+    let appPath = path.normalize(`${__dirname}/../../../app/`);
+    if (test) {
+        appPath = path.normalize(`${__dirname}/../app/`);
+        console.log('testing mode, routing folder', appPath);
+    }
     const ROUTER_FILE = 'Router.js';
     const CONTROLLERS_FOLDER = 'controllers/';
     const ROUTES_FOLDER = 'routes/';
 
+    const saveCtrlPath = appPath + CONTROLLERS_FOLDER + controller;
+    const saveRoutePath = appPath + ROUTES_FOLDER + router;
+    const RouterPath = appPath + ROUTER_FILE;
+
+    let Router;
     try {
-        const Router = require(appPath + ROUTER_FILE);
+        Router = require(RouterPath);
     } catch (err) {
         console.error("could not find Router.js... did you call endpoint --init ?");
+        return;
     }
+    console.log("Router.js: ", Router);
 
+    if (!fs.existsSync(saveRoutePath)) {
+        fs.openSync(saveRoutePath, 'a');
+        fs.writeFileSync(saveRoutePath, "'boilerplate stub!'");
+        console.log(saveRoutePath + " created!");
+    }
+    if (!fs.existsSync(saveCtrlPath)) {
+        fs.openSync(saveCtrlPath, 'a');
+        fs.writeFileSync(saveCtrlPath, "'boilerplate stub!'");
+        console.log(saveCtrlPath + " created!");
+    }
+    Router.push({path: endpointPath, handler: saveRoutePath});
+    const routerJsData = "module.exports = \n" + JSON.stringify(Router);
+
+    fs.openSync(RouterPath, 'a');
+    fs.writeFileSync(RouterPath, routerJsData);
+    console.log(RouterPath + " updated!");
 };
+
 
 
 
