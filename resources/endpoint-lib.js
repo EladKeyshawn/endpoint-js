@@ -84,6 +84,9 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     }
     console.log("Router.js: ", Router);
 
+
+
+
     // router file
     if (!fs.existsSync(routerFilePath)) {
         fs.openSync(routerFilePath, 'a');
