@@ -69,7 +69,11 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     const routerFilePath = appPath + ROUTES_FOLDER + router;
     const routerJsFilePath = appPath + ROUTER_FILE;
 
-    let endpointData = {endpointPath, controllerPath: 'app/' + CONTROLLERS_FOLDER + controller};
+    let endpointData = {
+        endpointPath,
+        controllerPath: 'app/' + CONTROLLERS_FOLDER + controller,
+        routerPath: 'app/' + ROUTES_FOLDER + router
+    };
 
     let Router;
     try {
@@ -95,7 +99,7 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     }
 
     // main Router.js
-    Router.push({path: endpointPath, handler: routerFilePath});
+    Router.push({path: endpointPath, handler: endpointData.routerPath});
     const routerJsData = "module.exports = \n" + JSON.stringify(Router, null, 2);
 
     fs.openSync(routerJsFilePath, 'a');
