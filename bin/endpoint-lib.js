@@ -1,7 +1,8 @@
 let path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
-var events = require('events');
+const format = require('string-format');
+
 const RouterStarter =
   "module.exports = [\n" +
   "  \n" +
@@ -21,12 +22,34 @@ const RouterStarter =
   "    // }\n" +
   "];";
 
+const ROUTER_FILE_BOILERPLATE =
+  "'use strict';\n" +
+  "\n" +
+  "/**\n" +
+  " * path: {endpointPath} \n" +
+  " ******************** */\n" +
+  "\n" +
+  "let Controller = rootRequire('{controllerFilePath}');\n" +
+  "let express = require('express');\n" +
+  "let router = express.Router();\n" +
+  "\n" +
+  "\n" +
+  "router.get('/health', Controller.health);\n" +
+  "\n\n\n" +
+  "module.exports = router;";
+
+const CONTROLLER_FILE_BOILERPLATE =
+  "module.exports = {\n" +
+  "    health (req,res) {\n" +
+  "        res.status(200).send(\"I'm healthy!\");\n" +
+  "    },\n" +
+  "\n" +
+  "};";
 
 function generateBoilerplate(routerPath) {
     console.log("generating app routing...");
     if (!fs.existsSync(routerPath + 'app')) {
         fs.mkdirSync(routerPath + 'app');
-        // main.emit('create', routerPath + 'app');
         console.log(routerPath + 'app', "created.");
 
     }
@@ -84,35 +107,42 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     const CONTROLLERS_FOLDER = 'controllers/';
     const ROUTES_FOLDER = 'routes/';
 
-    const saveCtrlPath = appPath + CONTROLLERS_FOLDER + controller;
-    const saveRoutePath = appPath + ROUTES_FOLDER + router;
-    const RouterPath = appPath + ROUTER_FILE;
+    const controllerFilePath = appPath + CONTROLLERS_FOLDER + controller;
+    const routerFilePath = appPath + ROUTES_FOLDER + router;
+    const routerJsFilePath = appPath + ROUTER_FILE;
+
+    let endpointData = {endpointPath, controllerFilePath: 'app/' + CONTROLLERS_FOLDER + controller};
 
     let Router;
     try {
-        Router = require(RouterPath);
+        Router = require(routerJsFilePath);
     } catch (err) {
         console.error("could not find Router.js... did you call endpoint --init ?");
         return;
     }
     console.log("Router.js: ", Router);
 
-    if (!fs.existsSync(saveRoutePath)) {
-        fs.openSync(saveRoutePath, 'a');
-        fs.writeFileSync(saveRoutePath, "'boilerplate stub!'");
-        console.log(saveRoutePath + " created!");
+    // router file
+    if (!fs.existsSync(routerFilePath)) {
+        fs.openSync(routerFilePath, 'a');
+        fs.writeFileSync(routerFilePath, format(ROUTER_FILE_BOILERPLATE, endpointData));
+        console.log(routerFilePath + " created!");
     }
-    if (!fs.existsSync(saveCtrlPath)) {
-        fs.openSync(saveCtrlPath, 'a');
-        fs.writeFileSync(saveCtrlPath, "'boilerplate stub!'");
-        console.log(saveCtrlPath + " created!");
-    }
-    Router.push({path: endpointPath, handler: saveRoutePath});
-    const routerJsData = "module.exports = \n" + JSON.stringify(Router);
 
-    fs.openSync(RouterPath, 'a');
-    fs.writeFileSync(RouterPath, routerJsData);
-    console.log(RouterPath + " updated!");
+    // controller file
+    if (!fs.existsSync(controllerFilePath)) {
+        fs.openSync(controllerFilePath, 'a');
+        fs.writeFileSync(controllerFilePath, CONTROLLER_FILE_BOILERPLATE);
+        console.log(controllerFilePath + " created!");
+    }
+
+    // main Router.js
+    Router.push({path: endpointPath, handler: routerFilePath});
+    const routerJsData = "module.exports = \n" + JSON.stringify(Router, null, 2);
+
+    fs.openSync(routerJsFilePath, 'a');
+    fs.writeFileSync(routerJsFilePath, routerJsData);
+    console.log(routerJsFilePath + " updated!");
 };
 
 
