@@ -18,7 +18,7 @@ const RouterStarter =
   "    //         }\n" +
   "    //     ]\n" +
   "    // }\n" +
-  "];"
+  "];";
 
 function setupRootRequire() {
     global.rootRequire = function (name) {

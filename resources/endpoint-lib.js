@@ -1,50 +1,8 @@
-let path = require('path');
+const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
 const format = require('string-format');
-
-const RouterStarter =
-  "module.exports = [\n" +
-  "  \n" +
-  "    // ====== EXAMPLE ====== //\n" +
-  "    // {\n" +
-  "    //     path: '/status',\n" +
-  "    //     handler: rootRequire('app/routes/status'),\n" +
-  "    // },\n" +
-  "    // {\n" +
-  "    //     path: '/another-path',\n" +
-  "    //     subpaths: [\n" +
-  "    //         {\n" +
-  "    //             path: '/specific-subpath',\n" +
-  "    //             handler: rootRequire('app/routes/another-path/specific-subpath')\n" +
-  "    //         }\n" +
-  "    //     ]\n" +
-  "    // }\n" +
-  "];";
-
-const ROUTER_FILE_BOILERPLATE =
-  "'use strict';\n" +
-  "\n" +
-  "/**\n" +
-  " * path: {endpointPath} \n" +
-  " ******************** */\n" +
-  "\n" +
-  "let Controller = rootRequire('{controllerFilePath}');\n" +
-  "let express = require('express');\n" +
-  "let router = express.Router();\n" +
-  "\n" +
-  "\n" +
-  "router.get('/health', Controller.health);\n" +
-  "\n\n\n" +
-  "module.exports = router;";
-
-const CONTROLLER_FILE_BOILERPLATE =
-  "module.exports = {\n" +
-  "    health (req,res) {\n" +
-  "        res.status(200).send(\"I'm healthy!\");\n" +
-  "    },\n" +
-  "\n" +
-  "};";
+const constants = require('./constants');
 
 function generateBoilerplate(routerPath) {
     console.log("generating app routing...");
@@ -77,7 +35,7 @@ function generateBoilerplate(routerPath) {
         fs.openSync(routerFilePath, 'a');
         console.log("Router.js created!");
 
-        fs.writeFileSync(routerFilePath, RouterStarter);
+        fs.writeFileSync(routerFilePath, constants.ROUTER_JS_STARTER);
 
         console.log("Router.js boilerplate ready!");
         return require(routerFilePath);
@@ -111,7 +69,7 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     const routerFilePath = appPath + ROUTES_FOLDER + router;
     const routerJsFilePath = appPath + ROUTER_FILE;
 
-    let endpointData = {endpointPath, controllerFilePath: 'app/' + CONTROLLERS_FOLDER + controller};
+    let endpointData = {endpointPath, controllerPath: 'app/' + CONTROLLERS_FOLDER + controller};
 
     let Router;
     try {
@@ -125,14 +83,14 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     // router file
     if (!fs.existsSync(routerFilePath)) {
         fs.openSync(routerFilePath, 'a');
-        fs.writeFileSync(routerFilePath, format(ROUTER_FILE_BOILERPLATE, endpointData));
+        fs.writeFileSync(routerFilePath, format(constants.ROUTER_FILE_BOILERPLATE, endpointData));
         console.log(routerFilePath + " created!");
     }
 
     // controller file
     if (!fs.existsSync(controllerFilePath)) {
         fs.openSync(controllerFilePath, 'a');
-        fs.writeFileSync(controllerFilePath, CONTROLLER_FILE_BOILERPLATE);
+        fs.writeFileSync(controllerFilePath, constants.CONTROLLER_FILE_BOILERPLATE);
         console.log(controllerFilePath + " created!");
     }
 
@@ -144,8 +102,6 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     fs.writeFileSync(routerJsFilePath, routerJsData);
     console.log(routerJsFilePath + " updated!");
 };
-
-
 
 
 module.exports = {

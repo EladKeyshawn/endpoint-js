@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-const lib = require('./endpoint-lib');
-var path = require('path');
-var chalk = require('chalk');
-var inquirer = require('inquirer');
-var clopts = require('cliclopts')([
+const lib = require('../resources/endpoint-lib');
+const path = require('path');
+const chalk = require('chalk');
+const inquirer = require('inquirer');
+const clopts = require('cliclopts')([
     {
         name: 'init',
         abbr: 'i',
@@ -34,15 +34,11 @@ var clopts = require('cliclopts')([
         boolean: true
     }
 ]);
-
 const argv = require('minimist')(process.argv.slice(2), {
     alias: clopts.alias(),
     boolean: clopts.boolean(),
     default: clopts.default()
 });
-
-catchInputErrors();
-
 const add_endpoint_prompt_questions = [
     {
         type: 'input',
@@ -76,21 +72,13 @@ function addEndpointPrompt () {
 function initEndpointStructure() {
     lib.initEndpoint({test:true});
 }
+
 function addEndpoint() {
     addEndpointPrompt()
 }
 
-
-if(argv.add) {
-    addEndpoint()
-}
-else if (argv.init) {
-    initEndpointStructure()
-}
-
-
 function catchInputErrors () {
-    var errs = 0
+    const errs = 0;
 
     if (argv.version) {
         console.log(require(path.resolve(__dirname, '..', 'package.json')).version)
@@ -106,27 +94,38 @@ function catchInputErrors () {
     if (errs) process.exit(1)
 }
 
+function main() {
+    catchInputErrors();
 
-
-function init (data) {
-    // lib({})
-      // .on('create', function (file) {
-      //     // file created
-      //     console.log(chalk.green('✓ ') + chalk.bold(file) + ' created')
-      // })
-      // .on('warn', function (msg) {
-      //     // something weird happened
-      //     console.log(chalk.yellow('✗ ' + msg))
-      // })
-      // .on('err', function (err) {
-      //     // something went horribly wrong!
-      //     console.error(err)
-      //     process.exit(1)
-      // })
-      // .on('done', function (res) {
-      //     // we did it!
-      //     console.log(chalk.green('✓ ') + chalk.bold(res.pkgName) + ' initialized')
-      //     process.exit(0)
-      // })
-      // .run() // run the thing
+    if(argv.add) {
+        addEndpoint()
+    }
+    else if (argv.init) {
+        initEndpointStructure()
+    }
 }
+
+main();
+
+// function init (data) {
+//     lib({})
+//       .on('create', function (file) {
+//           // file created
+//           console.log(chalk.green('✓ ') + chalk.bold(file) + ' created')
+//       })
+//       .on('warn', function (msg) {
+//           // something weird happened
+//           console.log(chalk.yellow('✗ ' + msg))
+//       })
+//       .on('err', function (err) {
+//           // something went horribly wrong!
+//           console.error(err)
+//           process.exit(1)
+//       })
+//       .on('done', function (res) {
+//           // we did it!
+//           console.log(chalk.green('✓ ') + chalk.bold(res.pkgName) + ' initialized')
+//           process.exit(0)
+//       })
+//       .run() // run the thing
+// }
