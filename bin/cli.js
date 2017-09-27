@@ -65,19 +65,19 @@ const add_endpoint_prompt_questions = [
 function addEndpointPrompt () {
     inquirer.prompt(add_endpoint_prompt_questions).then(function (data) {
         console.log(data);
-        lib.addEndpoint(data,true);
+        lib.addEndpoint(data,false);
     });
 }
 
 function initEndpointStructure() {
-    lib.initEndpoint({test:true});
+    lib.initEndpoint({test:false});
 }
 
 function catchInputErrors () {
     const errs = 0;
 
     if (argv.version) {
-        console.log(require(path.resolve(__dirname, '..', 'package.json')).version)
+        console.log(require(path.resolve(__dirname, '..', 'package.json')).version);
         process.exit(0)
     }
 
