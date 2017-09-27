@@ -25,7 +25,7 @@ module.exports = {
     " * path: {endpointPath} \n" +
     " ******************** */\n" +
     "\n" +
-    "let Controller = rootRequire('{controllerPath}');\n" +
+    "let Controller = require('{controllerPath}');\n" +
     "let express = require('express');\n" +
     "let router = express.Router();\n" +
     "\n" +
