@@ -73,10 +73,6 @@ function initEndpointStructure() {
     lib.initEndpoint({test:true});
 }
 
-function addEndpoint() {
-    addEndpointPrompt()
-}
-
 function catchInputErrors () {
     const errs = 0;
 
@@ -98,10 +94,10 @@ function main() {
     catchInputErrors();
 
     if(argv.add) {
-        addEndpoint()
+        addEndpointPrompt();
     }
     else if (argv.init) {
-        initEndpointStructure()
+        initEndpointStructure();
     }
 }
 
