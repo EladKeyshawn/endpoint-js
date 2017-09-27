@@ -55,7 +55,7 @@ const initEndpointStructure = function ({test}) {
 };
 
 function constructPath({pathParsed, endpointData, Router}) {
-    console.log("pathParsed[0]: ",pathParsed[0]);
+
     if (Router.length === 0) {
         if (pathParsed.length === 1) {
             // controller file
@@ -65,31 +65,33 @@ function constructPath({pathParsed, endpointData, Router}) {
                 console.log(endpointData.controllersFolder + '/' + endpointData.controller + " created!");
             }
 
+            endpointData.controllerPath = endpointData.controllersFolder + '/' + endpointData.controller;
+
             // router file
             if (!fs.existsSync(endpointData.routersFolder + '/' + endpointData.router)) {
                 fs.openSync(endpointData.routersFolder + '/' + endpointData.router, 'a');
                 fs.writeFileSync(endpointData.routersFolder + '/' + endpointData.router, format(constants.ROUTER_FILE_BOILERPLATE, endpointData));
                 console.log(endpointData.routersFolder + '/' + endpointData.router + " created!");
             }
-            Router.push({path: `/${pathParsed[0]}`, handler: endpointData.routerPath});
+            Router.push({path: pathParsed[0], handler: endpointData.routersFolder + '/' + endpointData.router});
             return Router;
         }
         else {
 
-            if (!fs.existsSync(endpointData.controllersFolder + '/' +pathParsed[0])) {
-                fs.mkdirSync(endpointData.controllersFolder + '/' + pathParsed[0]);
-                console.log(endpointData.controllersFolder + '/' + pathParsed[0], "created.");
+            if (!fs.existsSync(endpointData.controllersFolder + pathParsed[0])) {
+                fs.mkdirSync(endpointData.controllersFolder + pathParsed[0]);
+                console.log(endpointData.controllersFolder + pathParsed[0], "created.");
             }
-            endpointData.controllersFolder += '/' + pathParsed[0];
+            endpointData.controllersFolder += pathParsed[0];
 
-            if (!fs.existsSync(endpointData.routersFolder + '/' +pathParsed[0])) {
-                fs.mkdirSync(endpointData.routersFolder + '/' + pathParsed[0]);
-                console.log(endpointData.routersFolder + '/' + pathParsed[0], "created.");
+            if (!fs.existsSync(endpointData.routersFolder + pathParsed[0])) {
+                fs.mkdirSync(endpointData.routersFolder + pathParsed[0]);
+                console.log(endpointData.routersFolder + pathParsed[0], "created.");
             }
-            endpointData.routersFolder += '/' + pathParsed[0];
+            endpointData.routersFolder += pathParsed[0];
 
             Router.push({
-                path: `/${pathParsed[0]}`,
+                path: pathParsed[0],
                 subpaths: constructPath({pathParsed: pathParsed.splice(1), endpointData, Router: []})
             });
             return Router;
@@ -99,10 +101,8 @@ function constructPath({pathParsed, endpointData, Router}) {
     Router.forEach((endpoint, idx, array) => {
         console.log(`idx: ${idx} out of ${array.length}, path: ${endpoint.path}`);
 
-        if (idx === array.length - 1 && endpoint.path !== ('/' + pathParsed[0])) {
-            console.log("last element and pathParse is not equal pathParsed[0]... pushing ");
+        if (idx === array.length - 1 && endpoint.path !== pathParsed[0]) {
             if (pathParsed.length === 1) {
-                console.log("last element in pathParsed...pushing directly");
 
                 // controller file
                 if (!fs.existsSync(endpointData.controllersFolder + '/' + endpointData.controller)) {
@@ -110,7 +110,7 @@ function constructPath({pathParsed, endpointData, Router}) {
                     fs.writeFileSync(endpointData.controllersFolder + '/' + endpointData.controller, format(constants.CONTROLLER_FILE_BOILERPLATE, endpointData));
                     console.log(endpointData.controllersFolder + '/' + endpointData.controller + " created!");
                 }
-
+                endpointData.controllerPath = endpointData.controllersFolder + '/' + endpointData.controller;
                 // router file
                 if (!fs.existsSync(endpointData.routersFolder + '/' + endpointData.router)) {
                     fs.openSync(endpointData.routersFolder + '/' + endpointData.router, 'a');
@@ -118,36 +118,34 @@ function constructPath({pathParsed, endpointData, Router}) {
                     console.log(endpointData.routersFolder + '/' + endpointData.router + " created!");
                 }
 
-                Router.push({path: `/${pathParsed[0]}`, handler: endpointData.routerPath});
+                Router.push({path: pathParsed[0], handler: endpointData.routersFolder + '/' + endpointData.router});
             } else {
-                console.log("still not at end of pathParsed");
 
-                if (!fs.existsSync(endpointData.controllersFolder + '/' +pathParsed[0])) {
-                    fs.mkdirSync(endpointData.controllersFolder + '/' + pathParsed[0]);
-                    console.log(endpointData.controllersFolder + '/' + pathParsed[0], "created.");
+                if (!fs.existsSync(endpointData.controllersFolder + pathParsed[0])) {
+                    fs.mkdirSync(endpointData.controllersFolder + pathParsed[0]);
+                    console.log(endpointData.controllersFolder + pathParsed[0], "created.");
                 }
-                endpointData.controllersFolder += '/' + pathParsed[0];
+                endpointData.controllersFolder += pathParsed[0];
 
-                if (!fs.existsSync(endpointData.routersFolder + '/' +pathParsed[0])) {
-                    fs.mkdirSync(endpointData.routersFolder + '/' + pathParsed[0]);
-                    console.log(endpointData.routersFolder + '/' + pathParsed[0], "created.");
+                if (!fs.existsSync(endpointData.routersFolder + pathParsed[0])) {
+                    fs.mkdirSync(endpointData.routersFolder + pathParsed[0]);
+                    console.log(endpointData.routersFolder +  pathParsed[0], "created.");
                 }
-                endpointData.routersFolder += '/' + pathParsed[0];
+                endpointData.routersFolder += pathParsed[0];
 
                 Router.push({
-                    path: `/${pathParsed[0]}`,
+                    path: pathParsed[0],
                     subpaths: constructPath({pathParsed: pathParsed.splice(1), endpointData, Router: []})
                 });
             }
             return Router;
         }
 
-        if (pathParsed.length === 1 && endpoint.path === ('/' + pathParsed[0])) {
-            console.error("endpoint already exists!");
+        if (pathParsed.length === 1 && endpoint.path === pathParsed[0]) {
             throw new Error("endpoint already exists!");
         }
-        if (pathParsed.length > 1 && endpoint.path === ('/' + pathParsed[0])) {
-                console.log("part of endpoint matched moving on...");
+        if (pathParsed.length > 1 && endpoint.path === pathParsed[0]) {
+
                 if (_.has(endpoint, "subpaths")) {
                     endpoint.subpaths = constructPath({
                         pathParsed: pathParsed.splice(1),
@@ -171,12 +169,12 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
         appPath = path.normalize(`${__dirname}/../app/`);
         console.log('testing mode, routing folder', appPath);
     }
+
     const ROUTER_FILE = 'Router.js';
     const CONTROLLERS_FOLDER = 'controllers';
     const ROUTES_FOLDER = 'routes';
 
-    const controllerFilePath = appPath + CONTROLLERS_FOLDER + controller;
-    const routerFilePath = appPath + ROUTES_FOLDER + router;
+
     const routerJsFilePath = appPath + ROUTER_FILE;
 
     let endpointData = {
@@ -197,7 +195,7 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     console.log("Router.js: ", Router);
 
 
-    const pathParsed = endpointPath.split('/').splice(1);
+    const pathParsed = endpointPath.split('/').splice(1).map(part => '/' + part);
     console.log(pathParsed);
 
     console.log("constructing Path");
@@ -207,38 +205,14 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     } catch (err) {
         console.log(err);
     }
+    if(!constructedRouteJs) console.log("error adding endpoint...");
     const routerJsData = "module.exports = \n" + JSON.stringify(constructedRouteJs, null, 2);
 
     fs.openSync(routerJsFilePath, 'a');
     fs.writeFileSync(routerJsFilePath, routerJsData);
     console.log(routerJsFilePath + " updated!");
-    return;
 
 
-
-
-
-    // router file
-    if (!fs.existsSync(routerFilePath)) {
-        fs.openSync(routerFilePath, 'a');
-        fs.writeFileSync(routerFilePath, format(constants.ROUTER_FILE_BOILERPLATE, endpointData));
-        console.log(routerFilePath + " created!");
-    }
-
-    // controller file
-    if (!fs.existsSync(controllerFilePath)) {
-        fs.openSync(controllerFilePath, 'a');
-        fs.writeFileSync(controllerFilePath, constants.CONTROLLER_FILE_BOILERPLATE);
-        console.log(controllerFilePath + " created!");
-    }
-
-    // // main Router.js
-    // Router.push({path: endpointPath, handler: endpointData.routerPath});
-    // const routerJsData = "module.exports = \n" + JSON.stringify(Router, null, 2);
-    //
-    // fs.openSync(routerJsFilePath, 'a');
-    // fs.writeFileSync(routerJsFilePath, routerJsData);
-    // console.log(routerJsFilePath + " updated!");
 };
 
 
