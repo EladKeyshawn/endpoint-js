@@ -55,43 +55,40 @@ const initEndpointStructure = function ({test}) {
 };
 
 function constructPath({pathParsed, endpointData, Router}) {
-    console.log(Router);
+    console.log("pathParsed[0]: ",pathParsed[0]);
     if (Router.length === 0) {
         if (pathParsed.length === 1) {
             Router.push({path: `/${pathParsed[0]}`, handler: endpointData.routerPath});
             return Router;
         } else {
-            let constructed_subpaths = constructPath({pathParsed: pathParsed.splice(1), endpointData, Router: []});
-            if(!constructed_subpaths) return null;
             Router.push({
                 path: `/${pathParsed[0]}`,
-                subpaths: constructed_subpaths
+                subpaths: constructPath({pathParsed: pathParsed.splice(1), endpointData, Router: []})
             });
+            return Router;
         }
     }
 
     Router.forEach((endpoint, idx, array) => {
-        console.log(`running in router... idx = ${idx},  array.length =${array.length}`);
+        console.log(`idx: ${idx} out of ${array.length}, path: ${endpoint.path}`);
         if (idx === array.length - 1 && endpoint.path !== ('/' + pathParsed[0])) {
             console.log("last element and pathParse is not equal pathParsed[0]... pushing ");
             if (pathParsed.length === 1) {
                 console.log("last element in pathParsed...pusing directry");
                 Router.push({path: `/${pathParsed[0]}`, handler: endpointData.routerPath});
-                return Router;
             } else {
                 console.log("still not at end of pathParsed");
-                const subpaths_constructed = constructPath({pathParsed: pathParsed.splice(1), endpointData, Router: []})
-                if(!subpaths_constructed) return null;
                 Router.push({
                     path: `/${pathParsed[0]}`,
-                    subpaths: subpaths_constructed
+                    subpaths: constructPath({pathParsed: pathParsed.splice(1), endpointData, Router: []})
                 });
             }
+            return Router;
         }
 
         if (pathParsed.length === 1 && endpoint.path === ('/' + pathParsed[0])) {
             console.error("endpoint already exists!");
-            return null;
+            throw new Error("endpoint already exists!");
         }
         if (pathParsed.length > 1 && endpoint.path === ('/' + pathParsed[0])) {
                 console.log("part of endpoint matched moving on...");
@@ -103,12 +100,9 @@ function constructPath({pathParsed, endpointData, Router}) {
                     });
                     return Router;
                 } else {
-                    return null;
-                    console.log("handler for this endpoint already exists!");
+                    throw new Error("handler for this endpoint already exists!");
                 }
             }
-
-
 
     });
 
@@ -149,9 +143,14 @@ const addEndpoint = function ({endpointPath, router, controller}, test) {
     console.log(pathParsed);
 
     console.log("constructing Path");
-    let res = constructPath({pathParsed, endpointData, Router});
-    console.log("Construct res", JSON.stringify(res));
-    var dumpData = "module.exports = \n" + JSON.stringify(res, null, 2);
+    let res;
+    try {
+        res = constructPath({pathParsed, endpointData, Router})
+    } catch (err) {
+        console.error(err);
+    }
+    console.log("Construct Result: ", JSON.stringify(res, null, 2));
+    let dumpData = "module.exports = \n" + JSON.stringify(res, null, 2);
 
     fs.openSync(routerJsFilePath, 'a');
     fs.writeFileSync(routerJsFilePath, dumpData);
