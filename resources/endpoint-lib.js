@@ -150,6 +150,10 @@ function constructPath({pathParsed, endpointData, Router}) {
         if (pathParsed.length > 1 && endpoint.path === pathParsed[0]) {
 
             if (_.has(endpoint, "subpaths")) {
+
+                endpointData.controllersFolder += pathParsed[0];
+                endpointData.routersFolder += pathParsed[0];
+
                 endpoint.subpaths = constructPath({
                     pathParsed: pathParsed.splice(1),
                     endpointData,
