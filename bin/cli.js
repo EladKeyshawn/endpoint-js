@@ -64,7 +64,6 @@ const add_endpoint_prompt_questions = [
 // command action functions
 function addEndpointPrompt () {
     inquirer.prompt(add_endpoint_prompt_questions).then(function (data) {
-        console.log(data);
         lib.addEndpoint(data,false);
     });
 }
@@ -82,7 +81,7 @@ function catchInputErrors () {
     }
 
     if (argv.help) {
-        console.log('Usage: module-init [options]')
+        console.log('Usage: module-init [options]');
         clopts.print()
         process.exit(0)
     }
