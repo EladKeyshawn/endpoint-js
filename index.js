@@ -12,12 +12,14 @@ function setupRootRequire() {
     };
 }
 
-module.exports = function (app, {prefix, test}) {
+module.exports = function (app, options) {
 
     setupRootRequire();
 
-    if (!prefix) prefix = "";
-
+    let prefix = "";
+    if (options && options.prefix) {
+        prefix = options.prefix;
+    }
     const Router = rootRequire('app/Router.js');
     console.log("Router.js: ", Router);
     if (!Router) return;
