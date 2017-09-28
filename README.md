@@ -1,4 +1,5 @@
-![alt text](https://github.com/EladKeyshawn/endpoint-js/blob/master/assets/road-detours.png)
+![]( https://github.com/EladKeyshawn/endpoint-js/blob/master/assets/logo.png )
+
 # endpoint.js
 [![NPM](https://nodei.co/npm/endpoint-js.png)](https://npmjs.org/package/endpoint-js)
 ---
@@ -30,7 +31,7 @@ $ endpoint --i
 ```
 And your api routing folder and ready!
 
-// screenshot
+![](https://github.com/EladKeyshawn/endpoint-js/blob/master/assets/screenshot_init.png)
 
 To add an API route (Endpoint)
 ```
@@ -40,7 +41,8 @@ fill in the prompt with your endpoint details, for example:
 - endpoint path: /api/is/awesome
 - router file name: awesome.js
 - controller file name: awesomeController.js
-// screenshot
+
+![](https://github.com/EladKeyshawn/endpoint-js/blob/master/assets/screenshot_add_endpoint_promt.png)
 
 
 And an endpoint was added to Router.js (API structure file),
