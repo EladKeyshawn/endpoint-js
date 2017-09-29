@@ -1,6 +1,9 @@
 ![]( https://github.com/EladKeyshawn/endpoint-js/blob/master/assets/logo.png )
 
-# endpoint.js
+# endpoint.js 
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/88b108e818cc46c1aa01bbd037d6df15)](https://www.codacy.com/app/elad-keyshawn/endpoint-js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EladKeyshawn/endpoint-js&amp;utm_campaign=Badge_Grade)
+
 [![NPM](https://nodei.co/npm/endpoint-js.png)](https://npmjs.org/package/endpoint-js)
 ---
 
