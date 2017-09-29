@@ -5,12 +5,11 @@ const format = require('string-format');
 const constants = require('./constants');
 
 function generateBoilerplate(routerPath) {
-    console.log("generating app routing...");
     if (!fs.existsSync(routerPath + 'app')) {
         fs.mkdirSync(routerPath + 'app');
         console.log(routerPath + 'app', "created.");
-
     }
+
     if (!fs.existsSync(routerPath + 'app/controllers')) {
         fs.mkdirSync(routerPath + 'app/controllers');
         console.log(routerPath + 'app/controllers', "created.");
@@ -26,9 +25,9 @@ function generateBoilerplate(routerPath) {
         console.log(routerPath + 'app/routes', "created.");
 
     }
+
     const routerFilePath = routerPath + 'app/Router.js';
 
-    console.log("Processing Router.js ", routerFilePath);
     if (!fs.existsSync(routerFilePath)) {
         console.log("No Route.js was found!");
 
@@ -45,7 +44,6 @@ function generateBoilerplate(routerPath) {
 }
 
 const initEndpointStructure = function ({test}) {
-    // let routerPath = path.normalize(`${__dirname}/../../../`);
     let routerPath = `${process.cwd()}/`;
 
     if (test) {
@@ -132,10 +130,9 @@ function constructPath({pathParsed, endpointData, Router}) {
 }
 
 function constructFolderStructure(routeJs, {controllersFolder, routersFolder, currEndpointPath}) {
-    console.log("controllerFolder: ", controllersFolder);
-    console.log("routersFolder: ", routersFolder);
-
-    if (routeJs.length < 1) return;
+    if (routeJs.length < 1){
+        return;
+    }
 
     routeJs.forEach(endpoint => {
         console.log(endpoint);
@@ -177,7 +174,6 @@ function constructFolderStructure(routeJs, {controllersFolder, routersFolder, cu
 }
 
 const addEndpoint = function ({endpointPath, router, controller}, test) {
-    // let appPath = path.normalize(`${__dirname}/../../../app/`);
     let appPath = `${process.cwd()}/app/`;
 
     if (test) {

@@ -39,7 +39,7 @@ const argv = require('minimist')(process.argv.slice(2), {
     boolean: clopts.boolean(),
     default: clopts.default()
 });
-const add_endpoint_prompt_questions = [
+const ADD_ENDPOINT_PROMPT_QUESTIONS = [
     {
         type: 'input',
         name: 'endpointPath',
@@ -77,16 +77,18 @@ function catchInputErrors () {
 
     if (argv.version) {
         console.log(require(path.resolve(__dirname, '..', 'package.json')).version);
-        process.exit(0)
+        process.exit(0);
     }
 
     if (argv.help) {
         console.log('Usage: module-init [options]');
-        clopts.print()
-        process.exit(0)
+        clopts.print();
+        process.exit(0);
     }
 
-    if (errs) process.exit(1)
+    if (errs) {
+        process.exit(1);
+    }
 }
 
 function main() {

@@ -22,7 +22,9 @@ module.exports = function (app, options) {
     }
     const Router = rootRequire('app/Router.js');
     console.log("Router.js: ", Router);
-    if (!Router) return;
+    if (!Router){
+        return;
+    }
 
     Router.forEach((route) => {
         layPathStructure(prefix, route);
@@ -32,11 +34,14 @@ module.exports = function (app, options) {
         if (_.has(route, 'subpaths')) {
             route.subpaths.forEach((subpath) => {
                 layPathStructure(prefix + route.path, subpath);
-            })
+            });
         } else {
             console.log("attaching endpoint: ", prefix + route.path);
             app.use(prefix + route.path, require(route.handler));
         }
     }
 
+
 };
+
+
